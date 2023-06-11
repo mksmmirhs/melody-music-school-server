@@ -27,6 +27,12 @@ async function run() {
     const coursesCollection = client.db('musicDB').collection('courses');
     const cartCollection = client.db('musicDB').collection('carts');
 
+    //users
+    app.get('/users', async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post('/users', async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
@@ -40,9 +46,11 @@ async function run() {
       res.send(result);
     });
 
+    //courses
     app.get('/courses', async (req, res) => {
+      const query = { class_status: 'approved' };
       const result = await coursesCollection
-        .find()
+        .find(query)
         .sort({ students: -1 })
         .limit(6)
         .toArray();
