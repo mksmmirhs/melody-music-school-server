@@ -46,6 +46,17 @@ async function run() {
       res.send(result);
     });
 
+    app.patch('/users/admin/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: 'admin',
+        },
+      };
+      const result = await usersCollection.updateOne(query, updateDoc);
+    });
+
     //courses
     app.get('/courses', async (req, res) => {
       const query = { class_status: 'approved' };
