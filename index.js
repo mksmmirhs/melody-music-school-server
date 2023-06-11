@@ -117,6 +117,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get('/myclasses', async (req, res) => {
+      const email = req.query.email;
+      const query = { 'instructor.email': email };
+      const result = await coursesCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // carts
 
     app.get('/carts', async (req, res) => {
