@@ -105,10 +105,18 @@ async function run() {
       res.send(result);
     });
 
+    app.post('/courses', async (req, res) => {
+      const data = req.body;
+
+      const result = await coursesCollection.insertOne(data);
+      res.send(result);
+    });
+
     app.get('/classes', async (req, res) => {
       const result = await coursesCollection.find().toArray();
       res.send(result);
     });
+
     // carts
 
     app.get('/carts', async (req, res) => {
