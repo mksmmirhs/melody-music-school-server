@@ -132,6 +132,37 @@ async function run() {
       res.send(result);
     });
 
+    app.get('/allclasses', async (req, res) => {
+      const result = await coursesCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.patch('/classes/approve/:id', async (req, res) => {
+      const id = req.params.id;
+
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          class_status: 'approved',
+        },
+      };
+      const result = await coursesCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
+    app.patch('/classes/deny/:id', async (req, res) => {
+      const id = req.params.id;
+
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          class_status: 'denied',
+        },
+      };
+      const result = await coursesCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
     // carts
 
     app.get('/carts', async (req, res) => {
