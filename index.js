@@ -33,6 +33,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get('/users/profile', async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+
     app.get('/users/instructor', async (req, res) => {
       const query = { role: 'instructor' };
       const result = await usersCollection.find(query).toArray();
@@ -113,7 +120,8 @@ async function run() {
     });
 
     app.get('/classes', async (req, res) => {
-      const result = await coursesCollection.find().toArray();
+      const query = { class_status: 'approved' };
+      const result = await coursesCollection.find(query).toArray();
       res.send(result);
     });
 
