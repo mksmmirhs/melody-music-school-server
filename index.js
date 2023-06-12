@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
+const stripe = require('stripe')(process.env.PK_secret);
 const port = process.env.PORT || 5000;
 //middleware
 app.use(cors());
@@ -22,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
     const usersCollection = client.db('musicDB').collection('users');
     const coursesCollection = client.db('musicDB').collection('courses');
     const cartCollection = client.db('musicDB').collection('carts');
@@ -197,6 +198,19 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await cartCollection.deleteOne(query);
       res.send(result);
+    });
+
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body;
+      const total = price * 100;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: total,
+        currency: 'usd',
+        payment_method_types: ['card'],
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
     });
 
     // Send a ping to confirm a successful connection
