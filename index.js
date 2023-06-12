@@ -163,6 +163,20 @@ async function run() {
       res.send(result);
     });
 
+    app.patch('/classes/feedback/:id', async (req, res) => {
+      const id = req.params.id;
+      const message = req.body;
+
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          feedback: message.feedback,
+        },
+      };
+      const result = await coursesCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
     // carts
 
     app.get('/carts', async (req, res) => {
